@@ -1,0 +1,76 @@
+body {
+    overflow: auto;
+}
+
+input {
+    width: 100%;
+    margin: 0;
+}
+
+hr {
+    color: gray;
+    position: fixed;
+    top: 230px;
+    width: 100%;
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.hidden{
+    visibility: hidden;
+}
+
+.main {
+    background-color: white;
+}
+
+.top {
+    width: 30%;
+    margin: 0 auto;
+}
+
+.bottom {
+    position: fixed;
+    top: 245px;
+    height: 60%;
+    overflow: auto;
+    width: 100%;
+}
+
+.last {
+    width: 69%;
+    margin: 0;
+}
+
+.btn-last {
+    width: 29%;
+    padding: 0;
+    margin: 0;
+    height: 32px;
+}
+
+.mid-div {
+    width: 60%;
+}
+
+.meme-div {
+    margin: 10px auto;
+    width: 40%;
+    padding: 3px;
+    text-align: center;
+}
+
+.meme-div>p {
+    margin-left: 8px;
+}
+
+.meme-div>img {
+    height: 300px;
+    width: 250px;
+    border-radius: 3px;
+    border: 1px solid gray;
+    padding: 2px;
+    margin-left: 8px;
+}
