@@ -7,7 +7,7 @@ var memeID = document.querySelector("#memeID");
 var memeName = document.querySelector("#memeName");
 var memeCaption = document.querySelector("#memeCaption");
 var memeURL = document.querySelector("#memeURL");
-const serverURL = "http://localhost:8081/memes"; //http://ec2-3-17-231-21.us-east-2.compute.amazonaws.com:3000/memes";
+const serverURL = "http://localhost:8081/memes"; //"http://ec2-3-17-231-21.us-east-2.compute.amazonaws.com:3000/memes";
 
 //clear the input fields
 function reset() {
@@ -42,11 +42,17 @@ $("#submit").click(function () {
             name: nameInput.value,
             url: urlInput.value,
             caption: captionInput.value
+        },
+        statusCode: {
+            409: function (responseObject, textStatus, jqXHR) {
+                reset();
+                alert("Meme already exists");
+            }
         }
     }).done(function (data) {
         reset();
         loadMemes();
-    });
+    })
 });
 
 //add listeners to the newly created memes
@@ -84,8 +90,15 @@ function updateContent() {
         url: serverURL + "/" + id,
         type: 'PATCH',
         data: {
+            name: memeName.value,
             caption: memeCaption.value,
             url: memeURL.value
+        },
+        statusCode: {
+            409: function (responseObject, textStatus, jqXHR) {
+                reset();
+                alert("Meme already exists");
+            }
         }
     }).done(function (data) {
         closeForm();
