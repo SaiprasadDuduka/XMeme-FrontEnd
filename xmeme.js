@@ -7,16 +7,18 @@ var memeID = document.querySelector("#memeID");
 var memeName = document.querySelector("#memeName");
 var memeCaption = document.querySelector("#memeCaption");
 var memeURL = document.querySelector("#memeURL");
-const serverURL = "http://ec2-3-17-231-21.us-east-2.compute.amazonaws.com:3000";
+const serverURL = "http://localhost:8081/memes"; //http://ec2-3-17-231-21.us-east-2.compute.amazonaws.com:3000/memes";
 
+//clear the input fields
 function reset() {
     nameInput.value = "";
     captionInput.value = "";
     urlInput.value = "";
 }
 
+//make a get request to the server
 function loadMemes() {
-    $.get(serverURL + "/memes", (data, status) => {
+    $.get(serverURL, (data, status) => {
         var memes = JSON.parse(JSON.stringify(data));
         stream.innerHTML = "";
         memes.forEach(meme => {
@@ -26,30 +28,35 @@ function loadMemes() {
                                     <img src="'+ meme.url + '" alt="Meme Image"> \
                                 </div>'
         });
-        addButtonListener();
+
+        addButtonListener(); //add event listener to newly created memes
     });
 }
 
+//make a post request to the server
 $("#submit").click(function () {
-    let meme = {
-        name: nameInput.value,
-        url: urlInput.value,
-        caption: captionInput.value
-    };
-
-    $.post(serverURL + "/memes", meme,
-        function (data, status) {
-            reset();
-            loadMemes();
+    $.ajax({
+        url: serverURL,
+        type: 'POST',
+        data: {
+            name: nameInput.value,
+            url: urlInput.value,
+            caption: captionInput.value
         }
-    );
+    }).done(function (data) {
+        reset();
+        loadMemes();
+    });
 });
 
+//add listeners to the newly created memes
 function addButtonListener() {
+
+    //listener for edit button
     $(".patchB").click(function () {
         openForm();
         var id = (this.id).slice(0, -1);
-        $.get(serverURL + "/memes/" + id, (data, status) => {
+        $.get(serverURL + "/" + id, (data, status) => {
             var meme = JSON.parse(JSON.stringify(data));
             memeID.value = id;
             memeName.value = meme.name;
@@ -58,40 +65,42 @@ function addButtonListener() {
         });
     });
 
+    //listener for delete button
     $(".delB").click(function () {
         var id = (this.id).slice(0, -1);
         $.ajax({
-            url: serverURL + "/memes/" + id,
-            type: 'DELETE',
-            success: function (result) {
-                loadMemes();
-            }
-        });
+            url: serverURL + "/" + id,
+            type: 'DELETE'
+        }).done(function (data) {
+            loadMemes();
+        })
     });
 }
 
-function openForm() {
-    document.getElementById("myForm").style.display = "block";
-}
-
-function closeForm() {
-    document.getElementById("myForm").style.display = "none";
-}
-
-function updateContent(){
+//make a patch request to the server
+function updateContent() {
     var id = memeID.value;
     $.ajax({
-        url: serverURL + "/memes/" + id,
+        url: serverURL + "/" + id,
         type: 'PATCH',
         data: {
             caption: memeCaption.value,
             url: memeURL.value
-        },
-        success: function (result) {
-            closeForm();
-            loadMemes();
         }
+    }).done(function (data) {
+        closeForm();
+        loadMemes();
     });
+}
+
+//open the modal edit form
+function openForm() {
+    document.getElementById("myForm").style.display = "block";
+}
+
+//close the modal edit form
+function closeForm() {
+    document.getElementById("myForm").style.display = "none";
 }
 
 loadMemes();
