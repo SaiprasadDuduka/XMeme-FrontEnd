@@ -73,13 +73,16 @@ function validate() {
 $("#submit").click(function () {
     if (validate()) {
         $.ajax({
+            headers: {
+                "Content-Type":"application/json"
+            },
             url: serverURL,
             type: 'POST',
-            data: {
+            data: JSON.stringify({
                 name: nameInput.value,
                 url: urlInput.value,
                 caption: captionInput.value
-            },
+            }),
             statusCode: {
                 409: function (responseObject, textStatus, jqXHR) {
                     reset();
@@ -125,13 +128,15 @@ function addButtonListener() {
 function updateContent() {
     var id = memeID.value;
     $.ajax({
+        headers: {
+            "Content-Type":"application/json"
+        },
         url: serverURL + "/" + id,
         type: 'PATCH',
-        data: {
-            name: memeName.value,
+        data: JSON.stringify({
             caption: memeCaption.value,
             url: memeURL.value
-        },
+        }),
         statusCode: {
             409: function (responseObject, textStatus, jqXHR) {
                 reset();
